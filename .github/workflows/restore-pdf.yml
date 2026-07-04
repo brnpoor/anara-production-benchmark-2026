@@ -1,0 +1,48 @@
+name: Restore Benchmark PDF
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  restore-pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check if PDF needs restoration
+        id: check
+        run: |
+          PDF_SIZE=$(stat -c%s "ANARA_Benchmark_2026_v1.0.pdf" 2>/dev/null || echo "0")
+          echo "current_size=$PDF_SIZE"
+          if [ "$PDF_SIZE" -ge "114000" ]; then
+            echo "needs_restore=false" >> $GITHUB_OUTPUT
+            echo "PDF is already correct size ($PDF_SIZE bytes), skipping."
+          else
+            echo "needs_restore=true" >> $GITHUB_OUTPUT
+            echo "PDF is corrupted/missing ($PDF_SIZE bytes), restoring..."
+          fi
+
+      - name: Download correct PDF
+        if: steps.check.outputs.needs_restore == 'true'
+        run: |
+          curl -L --fail -o ANARA_Benchmark_2026_v1.0.pdf "https://customer-assets.emergentagent.com/wingman/db19c66a-e731-466c-ab76-66ecde5ccca4/attachments/f9da6c580cb8427495f9b3a1d0d55609_ANARA_Benchmark_2026_v1.0.pdf"
+          RESTORED_SIZE=$(stat -c%s "ANARA_Benchmark_2026_v1.0.pdf")
+          echo "Downloaded PDF size: $RESTORED_SIZE bytes"
+          if [ "$RESTORED_SIZE" -lt "114000" ]; then
+            echo "ERROR: Downloaded PDF too small ($RESTORED_SIZE bytes)"
+            exit 1
+          fi
+
+      - name: Commit restored PDF
+        if: steps.check.outputs.needs_restore == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ANARA_Benchmark_2026_v1.0.pdf
+          git commit -m "fix: restore full ANARA_Benchmark_2026_v1.0.pdf (114KB benchmark report)"
+          git push
