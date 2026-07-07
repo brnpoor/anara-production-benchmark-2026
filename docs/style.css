@@ -85,7 +85,8 @@ nav a {
   background: #fff;
 }
 
-.hero,
+.hero-image,
+.proof-strip,
 .band,
 .content,
 .report {
@@ -93,13 +94,53 @@ nav a {
   margin: 0 auto;
 }
 
-.hero {
+.hero-image {
+  position: relative;
+  overflow: hidden;
+  margin-top: 34px;
+  border: 1px solid rgba(11, 37, 69, .24);
+  border-radius: 8px;
+  background: #071012;
+  box-shadow: var(--shadow);
+}
+
+.hero-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hero-hotspot {
+  position: absolute;
+  display: block;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.hero-hotspot:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+
+.watch-demo {
+  left: 5.35%;
+  top: 76.1%;
+  width: 16.2%;
+  height: 6.9%;
+}
+
+.read-benchmark {
+  left: 23%;
+  top: 76.1%;
+  width: 12.1%;
+  height: 6.9%;
+}
+
+.proof-strip {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr);
-  gap: 40px;
-  align-items: center;
-  min-height: 520px;
-  padding: 72px 0 58px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding: 20px 0 58px;
 }
 
 .eyebrow {
@@ -184,21 +225,12 @@ h3 {
   background: var(--blue-dark);
 }
 
-.hero-panel {
-  display: grid;
-  gap: 12px;
-  padding: 24px;
+.proof-strip > div {
+  padding: 18px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--panel);
   box-shadow: var(--shadow);
-}
-
-.hero-panel > div {
-  padding: 18px;
-  border: 1px solid #e7edf5;
-  border-radius: 8px;
-  background: #f8fafc;
 }
 
 .metric {
@@ -374,15 +406,13 @@ footer {
 }
 
 @media (max-width: 980px) {
-  .hero,
   .section-grid,
   .split {
     grid-template-columns: 1fr;
   }
 
-  .hero {
-    min-height: auto;
-    padding-top: 64px;
+  .proof-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   h1 {
@@ -410,6 +440,8 @@ footer {
   }
 
   .hero,
+  .hero-image,
+  .proof-strip,
   .band,
   .content,
   .report {
@@ -425,6 +457,7 @@ footer {
   }
 
   .cards,
+  .proof-strip,
   .preview-grid,
   .all-pages-grid {
     grid-template-columns: 1fr;
